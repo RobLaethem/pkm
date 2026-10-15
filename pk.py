@@ -52,25 +52,11 @@ def api_get(endpoint: str, params: dict | None = None) -> dict:
         timeout=TIMEOUT
     )
 
-    if response.status_code == 401:
-        raise RuntimeError(
-            "API-key geweigerd. Controleer je PokeTrace API-key."
-        )
-
-    if response.status_code == 403:
-        raise RuntimeError(
-            "Geen toegang tot deze data."
-        )
-
-    if response.status_code == 429:
-        raise RuntimeError(
-            "De API-limiet werd bereikt."
-        )
-
     if not response.ok:
         raise RuntimeError(
-            f"PokeTrace fout {response.status_code}: "
-            f"{response.text[:500]}"
+            f"PokeTrace API fout - "
+            f"HTTP {response.status_code}: "
+            f"{response.text}"
         )
 
     return response.json()
