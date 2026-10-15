@@ -365,7 +365,25 @@ st.dataframe(
 # ------------------------------------------------------------
 # UPDATEKNOP
 # ------------------------------------------------------------
+if st.button("Test PokeTrace API-key"):
+    api_key = st.secrets["POKETRACE_API_KEY"]
 
+    # Toon NIET de key zelf, alleen wat veilige diagnostiek
+    st.write("Lengte API-key:", len(api_key))
+    st.write("Begint met:", api_key[:3] + "...")
+
+    response = requests.get(
+        "https://api.poketrace.com/v1/auth/info",
+        headers={
+            "X-API-Key": api_key,
+            "Accept": "application/json",
+        },
+        timeout=30,
+    )
+
+    st.write("HTTP status:", response.status_code)
+    st.code(response.text)
+    
 st.divider()
 
 if st.button(
