@@ -360,29 +360,47 @@ st.dataframe(
     use_container_width=True,
     hide_index=True
 )
+# ------------------------------------------------------------
+# API ACCOUNTINFO / LIMIET CONTROLEREN
+# ------------------------------------------------------------
 
+if st.button(
+    "📊 API-limiet controleren",
+    use_container_width=True
+):
+    try:
+        response = requests.get(
+            "https://api.poketrace.com/v1/auth/info",
+            headers={
+                "X-API-Key": API_KEY,
+                "Accept": "application/json"
+            },
+            timeout=30
+        )
+
+        if response.ok:
+            data = response.json()
+
+            st.success("API-key is geldig.")
+
+            # Volledige response tonen
+            st.json(data)
+
+        else:
+            st.error(
+                f"API-fout {response.status_code}"
+            )
+
+            st.code(response.text)
+
+    except requests.RequestException as error:
+        st.error(
+            f"Kon PokeTrace niet bereiken: {error}"
+        )
 
 # ------------------------------------------------------------
 # UPDATEKNOP
 # ------------------------------------------------------------
-if st.button("Test PokeTrace API-key"):
-    api_key = st.secrets["POKETRACE_API_KEY"]
-
-    # Toon NIET de key zelf, alleen wat veilige diagnostiek
-    st.write("Lengte API-key:", len(api_key))
-    st.write("Begint met:", api_key[:3] + "...")
-
-    response = requests.get(
-        "https://api.poketrace.com/v1/auth/info",
-        headers={
-            "X-API-Key": api_key,
-            "Accept": "application/json",
-        },
-        timeout=30,
-    )
-
-    st.write("HTTP status:", response.status_code)
-    st.code(response.text)
     
 st.divider()
 
